@@ -40,6 +40,12 @@ two commands
     $ sage -i polymake
     $ sage -pip install git+https://github.com/videlec/pypolymake
 
+If you are using the beta release of polymake you need to install the package from the
+beta branch with
+
+    $ sage -i polymake-beta   # TO BE FIXED
+    $ sage -pip install git+https://github.com/videlec/pypolymake@beta
+
 In principle, pypolymake could be used with Python2, Python3 and within Sage. The
 prerequisites are
 
