@@ -94,9 +94,9 @@ cdef class PerlObject:
         >>> g = p._get_property('GRAPH')
         >>> g
         Graph<Undirected> as Polytope::Lattice::GRAPH<...>
-        >>> g._get_integer_property('N_NODES')
+        >>> g._get_property('N_NODES', pm_type='Integer')
         8
-        >>> g._get_integer_property('N_EDGES')
+        >>> g._get_property('N_EDGES', pm_type='Integer')
         12
         """
         if pm_type is None:

@@ -201,6 +201,7 @@ cdef extern from "polymake/Matrix.h" namespace "polymake":
 
     # WRAP_IN(x,y) x>>y
     void pm_get_float "WRAP_IN" (pm_PerlPropertyValue, float) except +ValueError
+    void pm_get_int "WRAP_IN" (pm_PerlPropertyValue, long) except +ValueError
     void pm_get_Integer "WRAP_IN" (pm_PerlPropertyValue, pm_Integer) except +ValueError
     void pm_get_Rational "WRAP_IN" (pm_PerlPropertyValue, pm_Rational) except +ValueError
     void pm_get_ArrayInt "WRAP_IN" (pm_PerlPropertyValue, pm_ArrayInt) except +ValueError

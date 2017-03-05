@@ -28,6 +28,7 @@ cdef pm_type_array_array_int
 cdef pm_type_set_int
 cdef pm_type_map_int_int
 
+cdef pm_type_vector_int
 cdef pm_type_vector_integer
 cdef pm_type_vector_rational
 cdef pm_type_matrix_int

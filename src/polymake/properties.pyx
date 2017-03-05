@@ -45,7 +45,7 @@ overriden (e.g. you might want integer properties to output integers from gmpy).
 from .defs cimport (pm_PerlObject, new_PerlObject_from_PerlObject,
         pm_get_PerlObject, pm_ArrayInt, pm_MatrixRational, pm_MatrixInteger, pm_VectorInteger, pm_VectorRational,
         pm_Integer,
-        pm_get_float, pm_Rational, pm_get_Integer, pm_get_Rational, pm_get_MatrixRational,
+        pm_get_float, pm_get_int, pm_Rational, pm_get_Integer, pm_get_Rational, pm_get_MatrixRational,
         pm_get_MatrixInt, pm_get_MatrixInteger, pm_get_ArrayInt,
         pm_get_VectorInteger, pm_get_VectorRational, pm_get_PerlObject)
 
@@ -72,7 +72,9 @@ cdef pm_type_array_string = 'Array<String>'
 cdef pm_type_array_array_int = 'Array<Array<Int>>'
 cdef pm_type_set_int = 'Set<Int>'
 cdef pm_type_map_int_int = 'Map<Int, Int>'
+cdef pm_type_power_set_int = 'PowerSet<Int>'
 
+cdef pm_type_vector_int = 'Vector<Int>',
 cdef pm_type_vector_integer = 'Vector<Integer>'
 cdef pm_type_vector_rational = 'Vector<Rational>'
 cdef pm_type_matrix_int = 'Matrix<Int, NonSymmetric>'
@@ -82,9 +84,12 @@ cdef pm_type_matrix_rational = 'Matrix<Rational, NonSymmetric>'
 cdef pm_type_sparse_matrix_rational = 'SparseMatrix<Rational, NonSymmetric>'
 cdef pm_type_incidence_matrix = 'IncidenceMatrix<NonSymmetric>'
 
+cdef pm_type_uni_polynomial_rational_int = 'UniPolynomial<Rational, Int>'
+
 cdef pm_type_polytope_rational = 'Polytope<Rational>'
 cdef pm_type_quadratic_extension = 'Polytope<QuadraticExtension<Rational>>'
 cdef pm_type_graph_undirected = 'Graph<Undirected>'
+cdef pm_type_edge_map_undirected_vector_rational = 'EdgeMap<Undirected, Vector<Rational>>'
 
 cdef pm_type_geometric_simplicial_complex_rational = 'GeometricSimplicialComplex<Rational>'
 
@@ -95,7 +100,7 @@ cdef dict type_properties = {}
 type_properties[pm_type_polytope_rational] = {
     'AFFINE_HULL'                        : pm_type_matrix_rational,
     'ALTSHULER_DET'                      : pm_type_integer,
-    'AMBIENT_DIM'                        : pm_type_unknown, # ValueError: unknown property
+    'AMBIENT_DIM'                        : pm_type_int, # ??ValueError: unknown property
     'BALANCE'                            : pm_type_integer,
     'BALANCED'                           : pm_type_bool,
     'BOUNDARY_LATTICE_POINTS'            : pm_type_matrix_integer,
@@ -145,10 +150,10 @@ type_properties[pm_type_polytope_rational] = {
     'EPSILON'                            : pm_type_unknown, # ValueError: unknown property
     'EQUATIONS'                          : pm_type_unknown,
     'ESSENTIALLY_GENERIC'                : pm_type_bool,
-    'EVEN'                               : pm_type_unknown,
+    'EVEN'                               : pm_type_bool,
     'F2_VECTOR'                          : pm_type_matrix_integer,
     'FACE_SIMPLICITY'                    : pm_type_integer,
-    'FACET_DEGREES'                      : pm_type_unknown, # ValueError: unknown property
+    'FACET_DEGREES'                      : pm_type_vector_int,
     'FACET_LABELS'                       : pm_type_array_string,
     'FACET_POINT_LATTICE_DISTANCES'      : pm_type_unknown,
     'FACETS'                             : pm_type_sparse_matrix_rational,
@@ -393,6 +398,15 @@ def handler_bool(perl_object, bytes prop):
     sig_off()
     return bool(pm_ans.compare(0))
 
+def handler_int(perl_object, bytes prop):
+    cdef pm_PerlObject * po = (<PerlObject?> perl_object).pm_obj
+    cdef int ans
+    cdef char * cprop = prop
+    sig_on()
+    pm_get_int(po.give(cprop), ans)
+    sig_off()
+    return ans
+
 def handler_integer(perl_object, bytes prop):
     cdef pm_PerlObject * po = (<PerlObject?> perl_object).pm_obj
     cdef Integer ans = Integer.__new__(Integer)
@@ -479,7 +493,7 @@ cdef dict handlers = {
 
     # numbers
     pm_type_bool     : handler_bool,
-    pm_type_int      : handler_integer,
+    pm_type_int      : handler_int,
     pm_type_float    : handler_float,
     pm_type_integer  : handler_integer,
     pm_type_rational : handler_rational,
